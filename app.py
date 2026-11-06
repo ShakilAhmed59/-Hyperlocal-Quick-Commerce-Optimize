@@ -59,7 +59,8 @@ for cat, model in models.items():
     if override_night and cat == 'Summer Chill (Ice Cream/Cold Drinks)': pred_sales *= 2.0
         
     live_jitter = np.random.randint(-4, 5)
-    predictions[cat] = max(10, int(pred_sales + live_jitter))
+predictions[cat] = max(10, int(pred_sales + live_jitter))
+
 
 prices = {'Rainy Day Comfort (Khichuri/Tea)': 120, 'Summer Chill (Ice Cream/Cold Drinks)': 80, 'Match Day Snacks (Chips/Popcorn)': 60, 'Daily Groceries': 250}
 margins = {'Rainy Day Comfort (Khichuri/Tea)': 0.35, 'Summer Chill (Ice Cream/Cold Drinks)': 0.40, 'Match Day Snacks (Chips/Popcorn)': 0.45, 'Daily Groceries': 0.20}
