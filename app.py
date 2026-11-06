@@ -54,13 +54,18 @@ for cat, model in models.items():
     pred_input = pd.DataFrame([[sim_temp, sim_rain, sim_social]], columns=['Temperature', 'Rain_Probability', 'Social_Hype'])
     pred_sales = model.predict(pred_input)
     
-    if override_rain and cat == 'Rainy Day Comfort (Khichuri/Tea)': pred_sales *= 2.5
-    if override_match and cat == 'Match Day Snacks (Chips/Popcorn)': pred_sales *= 2.8
-    if override_night and cat == 'Summer Chill (Ice Cream/Cold Drinks)': pred_sales *= 2.0
+    # এরর-ফ্রি ডেটা এক্সট্র্যাকশন সেফটি নেট
+    try:
+        val = float(np.asarray(pred_sales).flatten()[0])
+    except:
+        val = 30.0
+        
+    if override_rain and cat == 'Rainy Day Comfort (Khichuri/Tea)': val *= 2.5
+    if override_match and cat == 'Match Day Snacks (Chips/Popcorn)': val *= 2.8
+    if override_night and cat == 'Summer Chill (Ice Cream/Cold Drinks)': val *= 2.0
         
     live_jitter = np.random.randint(-4, 5)
-predictions[cat] = max(10, int(pred_sales + live_jitter))
-
+    predictions[cat] = max(10, int(val + live_jitter))
 
 prices = {'Rainy Day Comfort (Khichuri/Tea)': 120, 'Summer Chill (Ice Cream/Cold Drinks)': 80, 'Match Day Snacks (Chips/Popcorn)': 60, 'Daily Groceries': 250}
 margins = {'Rainy Day Comfort (Khichuri/Tea)': 0.35, 'Summer Chill (Ice Cream/Cold Drinks)': 0.40, 'Match Day Snacks (Chips/Popcorn)': 0.45, 'Daily Groceries': 0.20}
@@ -98,7 +103,6 @@ else:
 
 st.markdown("---")
 
-# 📍 ম্যাপ উইজেট লেআউট
 st.subheader(f"🌐 Hyperlocal Geo-Spatial Location: {location}")
 geo_data = {
     "Dhanmondi Hub (Dhaka)": {"lat": 23.7461, "lon": 90.3742, "name": "Dhanmondi Dark Store Node A"},
@@ -136,5 +140,6 @@ st.dataframe(pred_df, use_container_width=True)
 
 time.sleep(2)
 st.rerun()
+
 
 
