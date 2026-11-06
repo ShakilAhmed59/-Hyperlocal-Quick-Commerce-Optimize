@@ -81,4 +81,5 @@ with col2:
     st.plotly_chart(fig_pie, use_container_width=True)
 
 st.subheader("📋 Live Inventory Procurement Ledger")
-st.dataframe(pred_df.style.background_gradient(cmap='Reds', subset=['Recommended Stock (Units)']), use_container_width=True)
+st.dataframe(pred_df, use_container_width=True)
+
