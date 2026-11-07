@@ -31,7 +31,7 @@ def populate_live_data():
             )
             db.add(new_demand)
         db.commit()
-        print("⚡ Live Database updated...")
+        print("⚡ Live Database updated with Predictive Stream Data...")
     except Exception as e:
         db.rollback()
         print(f"Failed: {e}")
@@ -42,6 +42,7 @@ if __name__ == "__main__":
     print("🚀 Running Real-time 1-Sec Hyperlocal Demand Streamer...")
     while True:
         populate_live_data()
-        time.sleep(1) # প্রতি ১ সেকেন্ডে ডাটাবেস আপডেট করবে
+        time.sleep(1)
+
 
 
