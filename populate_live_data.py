@@ -1,5 +1,6 @@
 import random
-from database import SessionLocal, init_db
+import time
+from database import SessionLocal
 from models.demand import Demand
 
 areas = [
@@ -17,63 +18,30 @@ products = {
 def populate_live_data():
     db = SessionLocal()
     try:
-        # Existing old demands structure records clean up
         db.query(Demand).delete()
-        db.commit()
-        
-        print("Inserting valid live models data into sqlite engine...")
-        
         for i, area in enumerate(areas, start=1):
             cat = random.choice(categories)
             prod = random.choice(products[cat])
-            qty = random.randint(15, 80)
+            qty = random.randint(10, 100)
             urgency = random.choice(["Critical", "High", "Medium"])
             
-            # Creating actual model object mapping to backend structure
             new_demand = Demand(
-                id=i,
-                area=area,
-                category=cat,
-                product_name=prod,
-                quantity=qty,
-                urgency=urgency,
-                latitude=0.0,
-                longitude=0.0
+                id=i, area=area, category=cat, product_name=prod,
+                quantity=qty, urgency=urgency, latitude=0.0, longitude=0.0
             )
             db.add(new_demand)
-            
         db.commit()
-        print("✨ Database successfully populated using official backend models!")
+        print("⚡ Live Database updated...")
     except Exception as e:
         db.rollback()
-        print(f"Direct insertion failed, trying alternative schema mapper: {e}")
-        # Fallback if properties are named area_name / item_category
-        try:
-            db.query(Demand).delete()
-            for i, area in enumerate(areas, start=1):
-                cat = random.choice(categories)
-                prod = random.choice(products[cat])
-                qty = random.randint(15, 80)
-                urgency = random.choice(["Critical", "High", "Medium"])
-                
-                fallback_demand = Demand(
-                    id=i,
-                    area_name=area,
-                    item_category=cat,
-                    product_name=prod,
-                    quantity=qty,
-                    urgency=urgency,
-                    latitude=0.0,
-                    longitude=0.0
-                )
-                db.add(fallback_demand)
-            db.commit()
-            print("✨ Database successfully populated using alternative properties!")
-        except Exception as inner_error:
-            print(f"Critical mapping crash: {inner_error}")
+        print(f"Failed: {e}")
     finally:
         db.close()
 
 if __name__ == "__main__":
-    populate_live_data()
+    print("🚀 Running Real-time 1-Sec Hyperlocal Demand Streamer...")
+    while True:
+        populate_live_data()
+        time.sleep(1) # প্রতি ১ সেকেন্ডে ডাটাবেস আপডেট করবে
+
 

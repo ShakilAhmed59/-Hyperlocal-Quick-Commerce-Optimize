@@ -94,8 +94,17 @@ def seed_sample_data(db_session: Session):
             for supplier_id, product_name, category, stock_quantity in INVENTORY_SAMPLE_DATA
         ])
 
-    if db_session.scalar(select(Demand).limit(1)) is None:
-        db_session.add_all([Demand(**demand_data) for demand_data in DEMAND_SAMPLE_DATA])
+    existing_demands = db_session.scalars(select(Demand)).all()
+    existing_keys = {(item.area, item.product_name) for item in existing_demands}
+    additions = []
+    for demand_data in DEMAND_SAMPLE_DATA:
+        key = (demand_data["area"], demand_data["product_name"])
+        if key not in existing_keys:
+            additions.append(Demand(**demand_data))
+            existing_keys.add(key)
+        if len(existing_demands) + len(additions) >= 15:
+            break
+    db_session.add_all(additions[:max(0, 15 - len(existing_demands))])
 
     db_session.commit()
 

@@ -6,3 +6,9 @@ numpy
 pydantic
 python-multipart
 reportlab
+requests
+geopy
+streamlit
+folium
+streamlit-folium
+scikit-learn
