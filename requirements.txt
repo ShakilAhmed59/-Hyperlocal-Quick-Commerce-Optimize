@@ -1,5 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
 pandas
-scikit-learn
-plotly
-jinja2
-
+numpy
+pydantic
+python-multipart
+reportlab
