@@ -140,7 +140,7 @@ area_locations = {
 }
 map_list = []
 for area, coords in area_locations.items():
-    map_list.append({"lat": coords[0], "lon": coords[1], "Area": area})
+    map_list.append({"lat": coords, "lon": coords, "Area": area})
 st.map(pd.DataFrame(map_list), zoom=10, use_container_width=True)
 
 st.markdown("---")
