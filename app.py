@@ -6,7 +6,7 @@ import numpy as np
 from datetime import datetime
 from data_engine import generate_mock_data, train_predictive_model
 
-st.set_page_config(page_title="Hyperlocal Q-Commerce Optimizer", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Hyperlocal Q-Commerce Enterprise Optimizer", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
     <style>
@@ -26,30 +26,59 @@ def load_system():
 
 models = load_system()
 
-# 🔐 ১. এডমিন ও ইউজার প্যানেল সুইচিং সিস্টেম (সাইডবার)
-st.sidebar.header("🔐 User Access Management")
-user_role = st.sidebar.selectbox("Select Access Control Level", ["👑 Super Admin Control", "🏢 Area Manager Portal", "📊 Sales & Demand Analyst", "🚴 Rider Fulfillment App"])
+# 🔐 ১. SECURE GATEWAY / LOGIN MODULE (বাম পাশের সাইডবার)
+st.sidebar.header("🔒 Secure Gateway")
+auth_role = st.sidebar.selectbox("Select Your Role:", ["Admin", "Area Manager", "Sales Manager", "Rider"])
+auth_email = st.sidebar.text_input("Enter Registered Email", value="shakilshanto899@gmail.com")
+auth_phone = st.sidebar.text_input("Enter Phone Number", value="01715233659")
+auth_code = st.sidebar.text_input("Enter Unique Auth Code", value="Shakil1024@", type="password")
+login_btn = st.sidebar.button("Login to System")
+
+# স্টেজ ও সেশন স্টেট ট্র্যাকিং লগইনের জন্য
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
+if login_btn:
+    if auth_code == "Shakil1024@":
+        st.session_state["logged_in"] = True
+        st.sidebar.success("🔑 Authentication Successful!")
+    else:
+        st.session_state["logged_in"] = False
+        st.sidebar.error("❌ Invalid Unique Authentication Code!")
+
+# যদি লগইন সাকসেসফুল না হয়, তবে মেইন ড্যাশবোর্ড লক থাকবে
+if not st.session_state["logged_in"]:
+    st.markdown('<p class="main-title">🔒 Hyperlocal Quick-Commerce Enterprise Platform</p>', unsafe_allow_html=True)
+    st.warning("⚠️ Access Restricted. Select your designated role and enter valid credentials to unlock the dashboard dashboard system.")
+    
+    # ব্যাকআপ হিসেবে জাজদের ডেমো মোড এক্সেস বাটন দেওয়া
+    if st.button("Unlock Demo View for Presentation"):
+        st.session_state["logged_in"] = True
+        st.rerun()
+    st.stop()
+
+# ----------------- সফল লগইনের পর মূল ড্যাশবোর্ড লোড হবে -----------------
 
 st.sidebar.markdown("---")
-st.sidebar.header("🎛️ Hyperlocal Command Center")
+st.sidebar.header("🎛️ AI Command Center")
 location = st.sidebar.selectbox("📍 Target Operational Hub", ["Dhanmondi Hub (Dhaka)", "Uttara Hub (Dhaka)", "Gulshan Hub (Dhaka)"])
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("🕹️ Telemetry & Event Overrides")
+st.sidebar.subheader("🕹️ Telemetry Event Overrides")
 override_rain = st.sidebar.toggle("🌧️ Sudden Flash Rain Torrent")
 override_match = st.sidebar.toggle("🏆 Live Cricket Match (BD vs IND)")
 override_night = st.sidebar.toggle("🌙 Late Night Vibe (12 AM - 3 AM)")
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("📊 Live Micro-Market Drivers")
+st.sidebar.subheader("📊 Micro-Market Drivers")
 sim_temp = st.sidebar.slider("Ambient Temperature (°C)", 15, 42, 34 if not override_rain else 22)
-sim_rain = st.sidebar.slider("Rain Probability (%)", 0, 100, 95 if override_rain else 15)
-sim_social = st.sidebar.slider("Social Buzz Momentum Score", 0, 100, 98 if override_match else 40)
+sim_rain = st.sidebar.slider("Base Rain Probability (%)", 0, 100, 95 if override_rain else 15)
+sim_social = st.sidebar.slider("Social Buzz Score", 0, 100, 98 if override_match else 40)
 
 if override_rain: sim_rain = 95
 if override_match: sim_social = 98
 
-# ২. প্রেডিক্টিভ ডাটা ক্যালকুলেশন ইঞ্জিন
+# প্রেডিক্টিভ ইঞ্জিন ডেটা প্রসেসিং
 predictions = {}
 for cat, model in models.items():
     pred_input = pd.DataFrame([[sim_temp, sim_rain, sim_social]], columns=['Temperature', 'Rain_Probability', 'Social_Hype'])
@@ -75,49 +104,61 @@ for cat, units in predictions.items():
 
 current_time = datetime.now().strftime("%I:%M:%S %p")
 
-# 🖥️ ৩. ডাইনামিক রোল-বেসড ইন্টারফেস রেন্ডারিং
 st.markdown(f'<p class="main-title">⚡ HYPERLOCAL QUICK-COMMERCE ENTERPRISE PLATFORM</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="sub-title">Active Security Context: <span class="role-badge">{user_role}</span> | Node Refreshed: {current_time}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="sub-title">🔑 Active Secure Role: <span class="role-badge">{auth_role}</span> | Telemetry Sync: {current_time}</p>', unsafe_allow_html=True)
 
-# ----------------- 👑 SUPER ADMIN CONTROL PANEL -----------------
-if user_role == "👑 Super Admin Control":
-    st.markdown("### 🎚️ Global System Telemetry (Full Control View)")
+# 🏢 রোল অনুযায়ী ডাইনামিক লাইভ কার্ড মডিউল
+if auth_role == "Admin":
+    st.markdown("### 🎚️ Global System Telemetry (Admin Full Control)")
     m1, m2, m3, m4 = st.columns(4)
-    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">👥 Network Retailers</p><p class="metric-val" style="color:#FFF;">1,248</p><p style="color:#00E676;font-size:11px;margin:0;">↑ 12% System Health</p></div>', unsafe_allow_html=True)
-    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🟢 Active Stores</p><p class="metric-val" style="color:#00E676;">1,037</p><p style="color:#B0B3B8;font-size:11px;margin:0;">83% Operational Matrix</p></div>', unsafe_allow_html=True)
-    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📦 Live System Orders</p><p class="metric-val" style="color:#FFBB33;">{sum(predictions.values()) * 3}</p><p style="color:#00E676;font-size:11px;margin:0;">Processing across Dhaka</p></div>', unsafe_allow_html=True)
-    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">💼 Total Gross Revenue</p><p class="metric-val" style="color:#00E676;">৳ {total_revenue * 3:,}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">All micro-hubs combined</p></div>', unsafe_allow_html=True)
-    
-    st.info("🛰️ Admin Note: System is sync-monitoring telemetry nodes from all zones. Manual live override overrides automated optimization algorithms.")
+    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">👥 Total Retailers</p><p class="metric-val" style="color:#FFF;">1,248</p><p style="color:#00E676;font-size:11px;margin:0;">↑ 12% +86 this month</p></div>', unsafe_allow_html=True)
+    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🟢 Active Network</p><p class="metric-val" style="color:#00E676;">1,037</p><p style="color:#B0B3B8;font-size:11px;margin:0;">83% Operational Capacity</p></div>', unsafe_allow_html=True)
+    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📦 Supply-Demand Alerts</p><p class="metric-val" style="color:#FFBB33;">17 Alerts</p><p style="color:#FF4B4B;font-size:11px;margin:0;">Active discrepancies flagged</p></div>', unsafe_allow_html=True)
+    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">💼 Global Revenue</p><p class="metric-val" style="color:#00E676;">৳ {total_revenue * 3:,}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">All target nodes aggregated</p></div>', unsafe_allow_html=True)
 
-# ----------------- 🏢 AREA MANAGER PORTAL -----------------
-elif user_role == "🏢 Area Manager Portal":
-    st.markdown(f"### 🏙️ Regional Hub Operational Cockpit: {location}")
+elif auth_role == "Area Manager":
+    st.markdown(f"### 🏙️ Regional Hub Cockpit: {location}")
     m1, m2, m3, m4 = st.columns(4)
-    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📍 Local Micro-Market</p><p class="metric-val" style="color:#FFF;font-size:20px;">{location.split()[0]}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Operational Hub Context</p></div>', unsafe_allow_html=True)
-    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📊 Optimized Shelf Capacity</p><p class="metric-val" style="color:#00E676;">88.4%</p><p style="color:#B0B3B8;font-size:11px;margin:0;">500 Unit Max Threshold</p></div>', unsafe_allow_html=True)
-    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🚴 Idle Riders on Bench</p><p class="metric-val" style="color:#FFBB33;">18 Riders</p><p style="color:#FF4B4B;font-size:11px;margin:0;">Avg. Dispatch Time: 9.4 mins</p></div>', unsafe_allow_html=True)
-    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🚨 Local Stock Risks</p><p class="metric-val" style="color:#FF4B4B;">{"HIGH RISK" if (override_rain or override_match) else "ZERO"}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Real-time automated alerts</p></div>', unsafe_allow_html=True)
+    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📍 Operational Zone</p><p class="metric-val" style="color:#FFF;font-size:20px;">{location}</p></div>', unsafe_allow_html=True)
+    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🏭 Active Demand Areas</p><p class="metric-val" style="color:#00E676;">11 Districts</p></div>', unsafe_allow_html=True)
+    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🚴 Dispatch Fleet Idle</p><p class="metric-val" style="color:#FFBB33;">18 Riders</p></div>', unsafe_allow_html=True)
+    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">⚠️ Risk Level Score</p><p class="metric-val" style="color:#FF4B4B;">{"CRITICAL" if override_rain else "STABLE"}</p></div>', unsafe_allow_html=True)
 
-# ----------------- 📊 SALES & DEMAND ANALYST -----------------
-elif user_role == "📊 Sales & Demand Analyst":
-    st.markdown("### 📈 Machine Learning Demand Prediction Models & Ledger")
+else:
+    # Sales Manager ও Rider এর জন্য বেসিক কম্বাইন ভিউ
     m1, m2, m3, m4 = st.columns(4)
-    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🔮 Predicted Next-Hour Units</p><p class="metric-val" style="color:#00E676;">{sum(predictions.values())} Units</p><p style="color:#B0B3B8;font-size:11px;margin:0;">AI Confidence Matrix: 94.6%</p></div>', unsafe_allow_html=True)
-    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">💰 Projected Gross Revenue</p><p class="metric-val">৳ {total_revenue:,}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Based on local predictive demand</p></div>', unsafe_allow_html=True)
-    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📈 Projected Net Margin</p><p class="metric-val" style="color:#00E676;">৳ {int(total_profit):,}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Dynamic calculation engine</p></div>', unsafe_allow_html=True)
-    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🧬 Active ML Model</p><p class="metric-val" style="color:#FF4B4B;font-size:18px;">Random Forest Regressor</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Feature-set: Weather+Social</p></div>', unsafe_allow_html=True)
-
-# ----------------- 🚴 RIDER FULFILLMENT APP -----------------
-elif user_role == "🚴 Rider Fulfillment App":
-    st.markdown("### 🏍️ Live Rider Fulfillment & Last-Mile Dispatch Dashboard")
-    m1, m2, m3, m4 = st.columns(4)
-    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📦 Orders Ready to Pick</p><p class="metric-val" style="color:#FFBB33;">14 Orders</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Fulfillment SLA target: 15 mins</p></div>', unsafe_allow_html=True)
-    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🚴 Active Riders in Field</p><p class="metric-val">42 Riders</p><p style="color:#00E676;font-size:11px;margin:0;">Live tracking via geo-nodes</p></div>', unsafe_allow_html=True)
-    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">🌧️ Severe Weather Delay</p><p class="metric-val" style="color:#FF4B4B;">{"+12 Mins" if override_rain else "0 Mins"}</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Dynamic adjustment buffer</p></div>', unsafe_allow_html=True)
-    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📍 Nearby Cluster Node</p><p class="metric-val" style="color:#FFF;font-size:22px;">Zone Alpha</p><p style="color:#B0B3B8;font-size:11px;margin:0;">Hyperlocal radius 2.5 KM</p></div>', unsafe_allow_html=True)
+    with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">💰 Projected Revenue</p><p class="metric-val">৳ {total_revenue:,}</p></div>', unsafe_allow_html=True)
+    with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📈 Profit Optimization</p><p class="metric-val" style="color:#00E676;">৳ {int(total_profit):,}</p></div>', unsafe_allow_html=True)
+    with m3: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">⏱️ Execution SLA</p><p class="metric-val" style="color:#FFBB33;">15 Mins Target</p></div>', unsafe_allow_html=True)
+    with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📡 Pipeline Status</p><p class="metric-val" style="color:#00E676;">Connected & Online</p></div>', unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ৪. অ্যালার্ট নোটিফিকেশন ইঞ্জিন
+# 🗺️ ৪. AREA-WISE GEOSPATIAL MAP (Ashulia, DIU Campus, Savar নোড লোড করা)
+st.subheader("📍 Live Emergency Demand & Micro-Market Geospatial Map")
+area_locations = {
+    'Ashulia': [23.8931, 90.3235], 'DIU Campus': [23.8768, 90.3201], 'Dhamrai': [23.9189, 90.2163],
+    'Eastern University': [23.9300, 90.2800], 'Mirpur 1': [23.7956, 90.3537], 'Mirpur 10': [23.8069, 90.3687],
+    'Mirpur 2': [23.8011, 90.3600], 'Nobinagar': [23.9133, 90.2678], 'Pollibiddut': [23.9055, 90.2788],
+    'Savar': [23.8583, 90.2667], 'Uttara': [23.8759, 90.3795]
+}
+map_list = []
+for area, coords in area_locations.items():
+    map_list.append({"lat": coords[0], "lon": coords[1], "Area": area})
+st.map(pd.DataFrame(map_list), zoom=11, use_container_width=True)
 
+st.markdown("---")
+
+# 📊 ৫. AREA-WISE DEMAND DENSITY & SUPPLY DEFICIT BREAKDOWN TABLES (ছবি ২ ও ৩ এর নিখুঁত প্রতিফলন)
+col_t1, col_t2 = st.columns(2)
+
+# ডাইনামিক লাইভ নয়েজ ইফেক্ট জেনারেট করা সারণির জন্য
+np.random.seed(int(time.time()) % 100)
+req_quantities = [18, 0, 4, 79, 0, 24, 2, 79, 50, 37, 55, 38, 44]
+req_jitter = [q + np.random.randint(-2, 3) if q > 0 else 0 for q in req_quantities]
+
+with col_t1:
+    st.subheader("📋 Area-wise Demand Density")
+    density_df = pd.DataFrame({
+        'area': list(area_locations.keys())[:10],
+        'total_requests': [1]*10,
