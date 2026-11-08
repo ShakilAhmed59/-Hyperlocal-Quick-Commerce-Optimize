@@ -26,7 +26,6 @@ def load_system():
 
 models = load_system()
 
-# 🔐 ১. SECURE GATEWAY / LOGIN MODULE (বাম পাশের সাইডবার)
 st.sidebar.header("🔒 Secure Gateway")
 auth_role = st.sidebar.selectbox("Select Your Role:", ["Admin", "Area Manager", "Sales Manager", "Rider"])
 auth_email = st.sidebar.text_input("Enter Registered Email", value="shakilshanto899@gmail.com")
@@ -34,7 +33,6 @@ auth_phone = st.sidebar.text_input("Enter Phone Number", value="01715233659")
 auth_code = st.sidebar.text_input("Enter Unique Auth Code", value="Shakil1024@", type="password")
 login_btn = st.sidebar.button("Login to System")
 
-# স্টেজ ও সেশন স্টেট ট্র্যাকিং লগইনের জন্য
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
@@ -46,18 +44,13 @@ if login_btn:
         st.session_state["logged_in"] = False
         st.sidebar.error("❌ Invalid Unique Authentication Code!")
 
-# যদি লগইন সাকসেসফুল না হয়, তবে মেইন ড্যাশবোর্ড লক থাকবে
 if not st.session_state["logged_in"]:
     st.markdown('<p class="main-title">🔒 Hyperlocal Quick-Commerce Enterprise Platform</p>', unsafe_allow_html=True)
-    st.warning("⚠️ Access Restricted. Select your designated role and enter valid credentials to unlock the dashboard dashboard system.")
-    
-    # ব্যাকআপ হিসেবে জাজদের ডেমো মোড এক্সেস বাটন দেওয়া
+    st.warning("⚠️ Access Restricted. Select your designated role and enter valid credentials to unlock the dashboard system.")
     if st.button("Unlock Demo View for Presentation"):
         st.session_state["logged_in"] = True
         st.rerun()
     st.stop()
-
-# ----------------- সফল লগইনের পর মূল ড্যাশবোর্ড লোড হবে -----------------
 
 st.sidebar.markdown("---")
 st.sidebar.header("🎛️ AI Command Center")
@@ -78,7 +71,6 @@ sim_social = st.sidebar.slider("Social Buzz Score", 0, 100, 98 if override_match
 if override_rain: sim_rain = 95
 if override_match: sim_social = 98
 
-# প্রেডিক্টিভ ইঞ্জিন ডেটা প্রসেসিং
 predictions = {}
 for cat, model in models.items():
     pred_input = pd.DataFrame([[sim_temp, sim_rain, sim_social]], columns=['Temperature', 'Rain_Probability', 'Social_Hype'])
@@ -107,7 +99,6 @@ current_time = datetime.now().strftime("%I:%M:%S %p")
 st.markdown(f'<p class="main-title">⚡ HYPERLOCAL QUICK-COMMERCE ENTERPRISE PLATFORM</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="sub-title">🔑 Active Secure Role: <span class="role-badge">{auth_role}</span> | Telemetry Sync: {current_time}</p>', unsafe_allow_html=True)
 
-# 🏢 রোল অনুযায়ী ডাইনামিক লাইভ কার্ড মডিউল
 if auth_role == "Admin":
     st.markdown("### 🎚️ Global System Telemetry (Admin Full Control)")
     m1, m2, m3, m4 = st.columns(4)
@@ -125,7 +116,6 @@ elif auth_role == "Area Manager":
     with m4: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">⚠️ Risk Level Score</p><p class="metric-val" style="color:#FF4B4B;">{"CRITICAL" if override_rain else "STABLE"}</p></div>', unsafe_allow_html=True)
 
 else:
-    # Sales Manager ও Rider এর জন্য বেসিক কম্বাইন ভিউ
     m1, m2, m3, m4 = st.columns(4)
     with m1: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">💰 Projected Revenue</p><p class="metric-val">৳ {total_revenue:,}</p></div>', unsafe_allow_html=True)
     with m2: st.markdown(f'<div class="metric-card"><p style="color:#B0B3B8;margin:0;">📈 Profit Optimization</p><p class="metric-val" style="color:#00E676;">৳ {int(total_profit):,}</p></div>', unsafe_allow_html=True)
@@ -134,7 +124,13 @@ else:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# 🗺️ ৪. AREA-WISE GEOSPATIAL MAP (Ashulia, DIU Campus, Savar নোড লোড করা)
+if override_rain: st.error(f"🌧️ **CRITICAL ANOMALY DETECTED:** Flash flood conditions active in {location}! Reallocating warehouse capacity to emergency grocery goods.")
+elif override_match: st.success(f"🏆 **HIGH EVENT SURGE:** Localized cricket match momentum spike! Predictive AI variants pushed to front-line warehouse pick-bins.")
+elif override_night: st.warning(f"🌙 **LATE-NIGHT IMPULSE WAVE:** High social media munchies sentiment active. Recommending optimization for cold dessert categories.")
+else: st.info("🛰️ Supply chain telemetry data pipeline is clear. Processing automated localized configurations.")
+
+st.markdown("---")
+
 st.subheader("📍 Live Emergency Demand & Micro-Market Geospatial Map")
 area_locations = {
     'Ashulia': [23.8931, 90.3235], 'DIU Campus': [23.8768, 90.3201], 'Dhamrai': [23.9189, 90.2163],
@@ -145,16 +141,13 @@ area_locations = {
 map_list = []
 for area, coords in area_locations.items():
     map_list.append({"lat": coords[0], "lon": coords[1], "Area": area})
-st.map(pd.DataFrame(map_list), zoom=11, use_container_width=True)
+st.map(pd.DataFrame(map_list), zoom=10, use_container_width=True)
 
 st.markdown("---")
 
-# 📊 ৫. AREA-WISE DEMAND DENSITY & SUPPLY DEFICIT BREAKDOWN TABLES (ছবি ২ ও ৩ এর নিখুঁত প্রতিফলন)
 col_t1, col_t2 = st.columns(2)
-
-# ডাইনামিক লাইভ নয়েজ ইফেক্ট জেনারেট করা সারণির জন্য
 np.random.seed(int(time.time()) % 100)
-req_quantities = [18, 0, 4, 79, 0, 24, 2, 79, 50, 37, 55, 38, 44]
+req_quantities = [0, 18, 0, 79, 0, 24, 0, 79, 50, 37, 55, 38, 44]
 req_jitter = [q + np.random.randint(-2, 3) if q > 0 else 0 for q in req_quantities]
 
 with col_t1:
@@ -162,3 +155,4 @@ with col_t1:
     density_df = pd.DataFrame({
         'area': list(area_locations.keys())[:10],
         'total_requests': [1]*10,
+        'category_breakdown': ['{"Food":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Emergency":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Water":1}'],
