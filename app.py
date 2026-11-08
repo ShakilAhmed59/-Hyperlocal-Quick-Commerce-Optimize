@@ -12,7 +12,7 @@ st.markdown("""
     <style>
     .main-title { font-size:34px !important; font-weight: bold; color: #FF4B4B; text-align: center; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
     .sub-title { font-size:16px; color: #B0B3B8; text-align: center; margin-bottom: 25px; }
-    .metric-card { background-color: #1E1E24; padding: 18px; border-radius: 12px; box-shadow: 3px 5px 12px rgba(0,0,0,0.4); text-align: center; border: 1px solid #3A3B3C; }
+    .metric-card { background-color: #1E1E24; padding: 18px; border-radius: 12px; box-shadow: 3px 5px 12 rgba(0,0,0,0.4); text-align: center; border: 1px solid #3A3B3C; }
     .metric-val { font-size: 28px; font-weight: bold; color: #00E676; margin-top: 5px; }
     .role-badge { background-color: #FF4B4B; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
     </style>
@@ -154,5 +154,5 @@ with col_t1:
     st.subheader("📋 Area-wise Demand Density")
     density_df = pd.DataFrame({
         'area': list(area_locations.keys())[:10],
-        'total_requests': [1]*10,
+        'total_requests': [1] * 10,
         'category_breakdown': ['{"Food":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Emergency":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Water":1}'],
