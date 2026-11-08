@@ -58,9 +58,9 @@ location = st.sidebar.selectbox("📍 Target Operational Hub", ["Dhanmondi Hub (
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("🕹️ Telemetry Event Overrides")
-override_rain = st.sidebar.toggle(" Sudden Flash Rain Torrent")
-override_match = st.sidebar.toggle(" Live Cricket Match (BD vs IND)")
-override_night = st.sidebar.toggle(" Late Night Vibe (12 AM - 3 AM)")
+override_rain = st.sidebar.toggle("🌧️ Sudden Flash Rain Torrent")
+override_match = st.sidebar.toggle("🏆 Live Cricket Match (BD vs IND)")
+override_night = st.sidebar.toggle("🌙 Late Night Vibe (12 AM - 3 AM)")
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("📊 Live Drivers")
@@ -140,7 +140,7 @@ area_locations = {
 }
 map_list = []
 for area, coords in area_locations.items():
-    map_list.append({"lat": coords, "lon": coords, "Area": area})
+    map_list.append({"lat": coords[0], "lon": coords[1], "Area": area})
 st.map(pd.DataFrame(map_list), zoom=10, use_container_width=True)
 
 st.markdown("---")
@@ -155,4 +155,3 @@ with col_t1:
         'category_breakdown': ['{"Food":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Emergency":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Medicine":1}', '{"Water":1}'],
         'priority': ['High', 'Critical', 'Medium', 'High', 'Low', 'Critical', 'Medium', 'High', 'Low', 'Medium']
     })
-
